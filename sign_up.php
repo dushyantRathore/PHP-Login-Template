@@ -12,18 +12,29 @@ if(isset($_POST['email']) && isset($_POST['password']) && isset($_POST['first'])
 
 	if(!empty($email) && !empty($password) && !empty($first) && !empty($second))
 	{
-		$sql = "INSERT INTO details VALUES (NULL, '$email', '$password_hash', '$first', '$second')";
-		$query_run = mysql_query($sql);
-		if($query_run)
+		$query = "SELECT username FROM details WHERE username = '$email'";
+		$query_run = mysql_query($query);
+		$query_num_rows = mysql_num_rows($query_run);
+
+		if($query_num_rows == 1)
 		{
-			echo "<br>You have registered successfully";
+			echo "<br><b>The email already exists</b>";
+		}
+		else if($query_num_rows == 0)
+		{
+			$sql = "INSERT INTO details VALUES (NULL, '$email', '$password_hash', '$first', '$second')";
+			$query_run = mysql_query($sql);
+			if($query_run)
+			{
+				echo "<br>You have registered successfully";
+			}
 		}
 	}
 	else
 	{
 		echo "<br>Empty Data item not allowed";
 	}
-	
+
 }
 
 ?>
@@ -46,7 +57,7 @@ if(isset($_POST['email']) && isset($_POST['password']) && isset($_POST['first'])
 		<form role="form" action="sign_up.php" method="post">
 			<div class="form-group">
 				<label for="usr">Email</label>
-				<input type="email" name="email" class="form-control" placeholder="Enter your email">
+				<input type="email" name="email" class="form-control" placeholder="Enter your email" value="<?php if(isset($email)) echo $email; ?>">
 			</div>
 			<div class="form-group">
 				<label for="pwd">Password</label>
@@ -54,11 +65,11 @@ if(isset($_POST['email']) && isset($_POST['password']) && isset($_POST['first'])
 			</div>
 			<div class="form-group">
 				<label for ="usr">First Name</label>
-				<input type="text" id = "usr" class="form-control" placeholder="Enter Your First Name" name = "first">
+				<input type="text" id = "usr" class="form-control" placeholder="Enter Your First Name" name = "first" value="<?php if(isset($first)) echo $first; ?>">
 			</div>
 			<div class="form-group">
 				<label for ="usr">Last Name</label>
-				<input type="text" id = "usr" class="form-control" placeholder="Enter Your Last Name" name="second">
+				<input type="text" id = "usr" class="form-control" placeholder="Enter Your Last Name" name="second" value="<?php if(isset($second)) echo $second; ?>">
 			</div>
 			<button type="submit" class="btn btn-default">Submit</button>
 		</form>
